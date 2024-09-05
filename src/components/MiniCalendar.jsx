@@ -49,7 +49,7 @@ const MiniCalendar = ({ events, onRemoveEvent }) => {
                   {formatDate(startDate)}
                 </h3>
                 <p className="text-xs text-gray-600">Repeat: {event.repeat}</p>
-                <p className="text-xs text-gray-800">{event.description}</p>
+                <p className="text-xs text-gray-800">Do: {event.description}</p>
               </div>
               <button
                 className="text-red-500 hover:text-red-700 focus:outline-none"

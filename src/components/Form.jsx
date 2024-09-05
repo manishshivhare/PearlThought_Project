@@ -53,7 +53,7 @@ const Form = () => {
   useEffect(() => {
     const selectedDate = dayjs(date, "D MMM YYYY");
     setRepeatOptions([
-      "Doesn't repeat",
+      
       "Daily",
       `Weekly on ${selectedDate.format("dddd")}`,
       `Monthly on ${selectedDate.format("D")}`,
@@ -66,8 +66,24 @@ const Form = () => {
     localStorage.setItem("events", JSON.stringify(events));
   }, [events]);
 
-  const handleCustomRecurrenceModalClose = (repeat) => {
-    setRepeat(repeat);
+  // Update options when repeat changes
+  useEffect(() => {
+    if (repeat === "Custom...") {
+      setIsCustomRecurrenceModalOpen(true);
+    } else if (!repeatOptions.includes(repeat)) {
+      setRepeatOptions((prevOptions) => {
+        const newOptions = prevOptions.filter((option) => option !== "Custom...");
+        return [...newOptions, repeat, "Custom..."];
+      });
+    }
+  }, [repeat]);
+
+  const handleCustomRecurrenceModalClose = (customRepeat) => {
+    if (customRepeat) {
+      setRepeat(customRepeat);
+    } else {
+      setRepeat("Doesn't repeat");
+    }
     setIsCustomRecurrenceModalOpen(false);
   };
 
@@ -106,13 +122,7 @@ const Form = () => {
         <div className="repeat-dropdown mb-3">
           <select
             value={repeat}
-            onChange={(e) => {
-              if (e.target.value === "Custom...") {
-                setIsCustomRecurrenceModalOpen(true);
-              } else {
-                setRepeat(e.target.value);
-              }
-            }}
+            onChange={(e) => setRepeat(e.target.value)}
             className="border rounded px-2 py-1 text-sm w-full"
           >
             {repeatOptions.map((option, index) => (

@@ -1,29 +1,32 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import dayjs from "dayjs";
 import DateSelector from "./DateSelector";
 import useDateStore from "../Zustand/store.js"; // Import Zustand store
+import { day } from "../utils/Calendar.js";
 
 const CustomRecurrenceModal = ({ onClose }) => {
-  const { endDate, setEndDate, startDate } = useDateStore(); // Use Zustand store for end date
+  const { repeat, startDate, setRepeat } = useDateStore(); // Use Zustand store
   const [repeatEvery, setRepeatEvery] = useState(1);
   const [repeatType, setRepeatType] = useState("week");
   const [selectedDays, setSelectedDays] = useState([]);
   const [endCondition, setEndCondition] = useState("never");
   const [occurrences, setOccurrences] = useState(10);
+  const [endDate, setEndDate] = useState(null); // Local state for endDate
   const [showDateSelector, setShowDateSelector] = useState(false);
 
-  const { setRepeat } = useDateStore();
   const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
-  const [repeatOptions, setRepeatOptions] = useState([]);
-  const handleDateSelectorClose = (selectedDate) => {
-    setEndDate(dayjs(selectedDate)); // Use dayjs for consistent date handling
-    setShowDateSelector(false);
-  };
 
-  useEffect(() => {
+  const repeatOptions = useMemo(() => {
     const selectedDate = dayjs(startDate, "D MMM YYYY");
-    setRepeatOptions([`Monthly on day ${selectedDate.format("D")}`]);
+    return [`Monthly on day ${selectedDate.format("D")}`];
   }, [startDate]);
+
+  const handleDateSelectorClose = (selectedDate) => {
+    setShowDateSelector(false);
+    if (selectedDate) {
+      setEndDate(selectedDate);
+    }
+  };
 
   const toggleDaySelection = (day) => {
     setSelectedDays((prev) =>
@@ -36,18 +39,58 @@ const CustomRecurrenceModal = ({ onClose }) => {
     if (condition === "on") setShowDateSelector(true);
   };
 
-  const handleSubmit = useCallback(() => {
+  const constructRecurrenceString = useMemo(() => {
+    let recurrenceString = `Every ${repeatEvery} ${repeatType}${
+      repeatEvery > 1 ? "s" : ""
+    }`;
+
+    if (repeatType === "week" && selectedDays.length > 0) {
+      const selectedDaysString = selectedDays
+        .map((index) => day[index].substring(0, 3))
+        .join(", ");
+      recurrenceString += ` on ${selectedDaysString}`;
+    }
+
+    switch (endCondition) {
+      case "never":
+        recurrenceString += ", never ends";
+        break;
+      case "on":
+        if (endDate) {
+          recurrenceString += ` until ${dayjs(endDate).format("D MMM YYYY")}`;
+        }
+        break;
+      case "after":
+        recurrenceString += ` for ${occurrences} occurrences`;
+        break;
+      default:
+        break;
+    }
+
+    return recurrenceString;
+  }, [
+    repeatEvery,
+    repeatType,
+    selectedDays,
+    endCondition,
+    occurrences,
+    endDate,
+  ]);
+
+  const handleSaveRecurrenceRule = useCallback(() => {
     const recurrenceRule = {
-      repeatEvery,
+      repeatEvery: parseInt(repeatEvery, 10),
       repeatType,
       selectedDays,
       endCondition,
-      occurrences: endCondition === "after" ? occurrences : undefined,
+      occurrences:
+        endCondition === "after" ? parseInt(occurrences, 10) : undefined,
       endDate: endCondition === "on" ? endDate : undefined,
     };
 
-    setRepeat(recurrenceRule); // Save the recurrence rule to Zustand
-    if (onClose) onClose();
+    setRepeat(constructRecurrenceString);
+
+    if (onClose) onClose(constructRecurrenceString);
   }, [
     repeatEvery,
     repeatType,
@@ -59,7 +102,12 @@ const CustomRecurrenceModal = ({ onClose }) => {
     onClose,
   ]);
 
-  // Set the current weekday as default if repeat type is "week" and nothing is selected
+  // Function to handle cancel and reset state
+  const handleCancel = () => {
+    setRepeat("Doesn't repeat"); // Reset repeat to default
+    if (onClose) onClose(); // Close the modal without saving
+  };
+
   useEffect(() => {
     if (repeatType === "week" && selectedDays.length === 0) {
       const currentDayIndex = dayjs().day(); // Get the current weekday index (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
@@ -72,6 +120,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
       <div className="bg-white shadow-md rounded-md p-4 w-80">
         <h2 className="text-lg font-semibold mb-4">Custom Recurrence</h2>
 
+        {/* Recurrence Interval */}
         <div className="flex items-center mb-4">
           <span className="mr-2">Repeat every</span>
           <input
@@ -94,6 +143,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             <option value="year">year</option>
           </select>
         </div>
+
         {repeatType === "month" && (
           <div className="flex items-center mb-4">
             <select
@@ -109,6 +159,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             </select>
           </div>
         )}
+
         {repeatType === "week" && (
           <div className="flex items-center mb-4">
             <span className="mr-2">Repeat on</span>
@@ -130,6 +181,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
           </div>
         )}
 
+        {/* End Condition Section */}
         <div className="mb-4">
           <div className="mb-3">End</div>
           <div className="flex items-center mb-2">
@@ -191,22 +243,32 @@ const CustomRecurrenceModal = ({ onClose }) => {
           </div>
         </div>
 
+        {/* Custom Buttons Section */}
         <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="text-gray-600">
+          <button
+            onClick={handleCancel} // Cancel button logic
+            className="text-gray-600 bg-white border border-gray-300 rounded-md px-4 py-2 hover:bg-gray-100"
+            aria-label="Cancel"
+          >
             Cancel
           </button>
-          <button onClick={handleSubmit} className="text-blue-500">
-            Done
+          <button
+            onClick={handleSaveRecurrenceRule}
+            className="text-white bg-blue-500 rounded-md px-4 py-2 hover:bg-blue-600"
+            aria-label="Save"
+          >
+            Save
           </button>
         </div>
-      </div>
 
-      {showDateSelector && (
-        <DateSelector
-          onClose={handleDateSelectorClose}
-          isStartDate={false} // Specify it's for end date selection
-        />
-      )}
+        {/* DateSelector component */}
+        {showDateSelector && (
+          <DateSelector
+            onClose={handleDateSelectorClose}
+            selectedDate={endDate}
+          />
+        )}
+      </div>
     </div>
   );
 };
