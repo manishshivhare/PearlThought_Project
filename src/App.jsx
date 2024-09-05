@@ -1,10 +1,11 @@
 import "./App.css";
 import React from "react";
-import DateSelector from "./components/DateSelector.jsx";
+import Form from "./components/Form";
 
 export default function App() {
-  
   return (
-    <DateSelector />
+    <div >
+      <Form />;
+    </div>
   );
 }

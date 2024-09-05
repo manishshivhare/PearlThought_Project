@@ -1,93 +1,129 @@
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { generateDate, months } from "../utils/Calendar.js";
 import cn from "../utils/cn.js";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
-export default function DateSelector(){
+const DateSelector = ({ onClose }) => {
   const days = ["S", "M", "T", "W", "T", "F", "S"];
-  const currentDate = dayjs();
-  const [today, setToday] = useState(currentDate);
-  const [selectDate, setSelectDate] = useState(currentDate);
+
+  const [displayedDate, setDisplayedDate] = useState(dayjs());
+  const [date, setDate] = useState("");
+  const modalRef = useRef(null);
+
+  const handleDateSelect = useCallback(
+    (date) => {
+      setDate(date);
+      
+      if (onClose) onClose(date);
+    },
+    [setDate, onClose]
+  );
+
+  const handleTodayClick = useCallback(() => {
+    const today = dayjs();
+    setDate(today);
+    setDisplayedDate(today);
+  }, [setDate, onClose]);
+
+  const handleMonthChange = useCallback(
+    (direction) => {
+      const newDate =
+        direction === "prev"
+          ? displayedDate.subtract(1, "month")
+          : displayedDate.add(1, "month");
+      setDisplayedDate(newDate);
+    },
+    [displayedDate]
+  );
+
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        if (onClose) onClose();
+      }
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
+ 
+  const formattedCurrentDate = dayjs();
+
   return (
-    <div className="flex gap-10 sm:divide-x justify-center sm:w-1/2 mx-auto  h-screen items-center sm:flex-row flex-col">
-      <div className="w-96 h-96 ">
-        <div className="flex justify-between items-center">
-          <h1 className="select-none font-semibold">
-            {months[today.month()]}, {today.year()}
-          </h1>
-          <div className="flex gap-5 items-center ">
-            <GrFormPrevious
-              className="w-5 h-5 cursor-pointer hover:scale-105 transition-all"
-              onClick={() => {
-                setToday(today.month(today.month() - 1));
-              }}
-            />
+    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-2">
+      <div
+        ref={modalRef}
+        className="w-72 bg-white shadow-md rounded-md p-2 relative"
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center mb-2 relative">
+          <button
+            aria-label="Previous month"
+            className="text-lg p-1 rounded hover:bg-gray-200 focus:outline-none"
+            onClick={() => handleMonthChange("prev")}
+          >
+            <GrFormPrevious />
+          </button>
+          <div className="flex-1 text-center relative">
             <h1
-              className=" cursor-pointer hover:scale-105 transition-all"
-              onClick={() => {
-                setToday(currentDate);
-              }}
+              className="text-sm font-semibold cursor-pointer rounded hover:bg-gray-200 focus:outline-none"
+              onClick={handleTodayClick}
             >
-              Today
+              {months[displayedDate.month()]} {displayedDate.year()}
             </h1>
-            <GrFormNext
-              className="w-5 h-5 cursor-pointer hover:scale-105 transition-all"
-              onClick={() => {
-                setToday(today.month(today.month() + 1));
-              }}
-            />
           </div>
-        </div>
-        <div className="grid grid-cols-7 ">
-          {days.map((day, index) => {
-            return (
-              <h1
-                key={index}
-                className="text-sm text-center h-14 w-14 grid place-content-center text-gray-500 select-none"
-              >
-                {day}
-              </h1>
-            );
-          })}
+          <button
+            aria-label="Next month"
+            className="text-lg p-1 rounded hover:bg-gray-200 focus:outline-none"
+            onClick={() => handleMonthChange("next")}
+          >
+            <GrFormNext />
+          </button>
         </div>
 
-        <div className=" grid grid-cols-7 ">
-          {generateDate(today.month(), today.year()).map(
-            ({ date, today, currentMonth}, index) => {
-              return (
-                <div
-                  key={index}
-                  className="p-2 text-center h-14 grid place-content-center text-sm border-t"
+        {/* Days of the Week */}
+        <div className="grid grid-cols-7 text-xs text-center text-gray-500 mb-1">
+          {days.map((day, index) => (
+            <div key={index} className="p-1">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Dates */}
+        <div className="grid grid-cols-7 gap-1">
+          {generateDate(displayedDate.month(), displayedDate.year()).map(
+            ({ date, today, currentMonth }, index) => (
+              <div key={index} className="text-center">
+                <button
+                  className={cn(
+                    "h-6 w-6 flex items-center justify-center rounded-full transition-colors",
+                    today ? "bg-red-600 text-white" : "",
+                    currentMonth ? "" : "text-gray-300",
+                    formattedCurrentDate.isSame(date, "day")
+                      ? "bg-black text-white"
+                      : "",
+                    "hover:bg-black hover:text-white"
+                  )}
+                  onClick={() => handleDateSelect(date)}
+                  aria-label={`Select ${date.format("D MM YYYY")}`}
                 >
-                  <h1
-                    className={cn(
-                      today ? "bg-red-600 text-white" : "",
-                      currentMonth ? "": "hidden",
-                      selectDate.toDate().toDateString() ===
-                        date.toDate().toDateString()
-                        ? "bg-black text-white"
-                        : "",
-                      "h-10 w-10 rounded-full grid place-content-center hover:bg-black hover:text-white transition-all cursor-pointer select-none"
-                    )}
-                    onClick={() => {
-                      setSelectDate(date);
-                    }}
-                  >
-                    {date.date()}
-                  </h1>
-                </div>
-              );
-            }
+                  {date.date()}
+                </button>
+              </div>
+            )
           )}
         </div>
       </div>
-      {/* <div className="h-96 w-96 sm:px-5">
-        <h1 className=" font-semibold">
-          Schedule for {selectDate.toDate().toDateString()}
-        </h1>
-        <p className="text-gray-400">No meetings for today.</p>
-      </div> */}
     </div>
   );
 };
+
+export default DateSelector;
