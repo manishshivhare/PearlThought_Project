@@ -41,12 +41,13 @@ const CustomRecurrenceModal = ({ onClose }) => {
 
   const constructRecurrenceString = useMemo(() => {
     let recurrenceString = `Every ${repeatEvery} ${repeatType}${
-      repeatEvery > 1 ? "s" : "" 
+      repeatEvery > 1 ? "s" : ""
     }`;
-     
 
     if (repeatType === "week" && selectedDays.length > 0) {
-      const selectedDaysString = selectedDays
+      // Sort selected days in ascending order
+      const sortedSelectedDays = [...selectedDays].sort((a, b) => a - b);
+      const selectedDaysString = sortedSelectedDays
         .map((index) => day[index].substring(0, 3))
         .join(", ");
       recurrenceString += ` on ${selectedDaysString}`;
@@ -247,29 +248,29 @@ const CustomRecurrenceModal = ({ onClose }) => {
         {/* Custom Buttons Section */}
         <div className="flex justify-end gap-2">
           <button
-            onClick={handleCancel} // Cancel button logic
-            className="text-gray-600 bg-white border border-gray-300 rounded-md px-4 py-2 hover:bg-gray-100"
-            aria-label="Cancel"
+            onClick={handleCancel} // Cancel and close the modal
+            className="bg-red-500 text-white px-4 py-1 rounded"
           >
             Cancel
           </button>
           <button
-            onClick={handleSaveRecurrenceRule}
-            className="text-white bg-blue-500 rounded-md px-4 py-2 hover:bg-blue-600"
-            aria-label="Save"
+            onClick={handleSaveRecurrenceRule} // Save the recurrence rule
+            className="bg-blue-500 text-white px-4 py-1 rounded"
           >
             Save
           </button>
         </div>
 
-        {/* DateSelector component */}
+        {/* Date Selector Modal */}
         {showDateSelector && (
           <DateSelector
             onClose={handleDateSelectorClose}
-            selectedDate={endDate}
+            initialDate={endDate}
           />
         )}
-      <div className="mt-3 border text-sm bg-gray-200 p-1 rounded">{constructRecurrenceString}</div>
+        <div className="mt-3 border text-sm bg-gray-200 p-1 rounded">
+          {constructRecurrenceString}
+        </div>
       </div>
     </div>
   );

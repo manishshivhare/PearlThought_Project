@@ -15,7 +15,6 @@ const Form = () => {
     setRepeat,
     setDescription,
   } = useDateStore();
-  const [error, setError] = useState(null)
   const [date, setDate] = useState(dayjs().format("D MMM YYYY"));
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [isCustomRecurrenceModalOpen, setIsCustomRecurrenceModalOpen] = useState(false);
@@ -38,13 +37,10 @@ const Form = () => {
   };
 
   const handleSubmit = () => {
-    if(description === ""){
-      setError("Can't be empty")
-    }
     const newEvent = {
       startDate,
       repeat,
-      description,
+      description: description || "Nothing serious",
     };
     const updatedEvents = [...events, newEvent];
     setEvents(updatedEvents);
@@ -57,7 +53,6 @@ const Form = () => {
   useEffect(() => {
     const selectedDate = dayjs(date, "D MMM YYYY");
     setRepeatOptions([
-      
       "Daily",
       `Weekly on ${selectedDate.format("dddd")}`,
       `Monthly on ${selectedDate.format("D")}`,
@@ -70,7 +65,6 @@ const Form = () => {
     localStorage.setItem("events", JSON.stringify(events));
   }, [events]);
 
-  // Update options when repeat changes
   useEffect(() => {
     if (repeat === "Custom...") {
       setIsCustomRecurrenceModalOpen(true);
@@ -92,21 +86,23 @@ const Form = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-      <div className="task-form bg-white shadow-lg rounded-md p-4 w-full max-w-md">
-        <div className="tabs flex justify-between border-b pb-2 mb-3">
-          Reminder
+    <div className="flex flex-col items-center min-h-screen bg-gray-50 p-6 sm:p-12">
+      <div className="task-form bg-white shadow-xl rounded-lg p-6 w-full max-w-md">
+        <div className="tabs flex justify-between items-center border-b pb-2 mb-4">
+          <h2 className="text-xl font-semibold">Reminder</h2>
         </div>
 
-        <div className="flex mb-3 gap-2">
+        <div className="flex mb-4 gap-3 items-center">
           <div
-            className="date-time-picker flex gap-3 border border-gray-300 rounded p-2 cursor-pointer hover:border-blue-500 transition-all"
+            className="date-time-picker flex items-center gap-3 border border-gray-300 rounded p-3 cursor-pointer hover:border-blue-500 transition-all"
             onClick={() => setShowDateSelector(true)}
+            role="button"
+            aria-label="Select Date"
           >
-            <label className="block text-md font-medium text-gray-700 mb-1">
+            <label className="block text-md font-medium text-gray-700">
               For:
             </label>
-            {date}
+            <span className="text-gray-600">{date}</span>
           </div>
         </div>
 
@@ -123,11 +119,12 @@ const Form = () => {
           </>
         )}
 
-        <div className="repeat-dropdown mb-3">
+        <div className="repeat-dropdown mb-4">
           <select
             value={repeat}
             onChange={(e) => setRepeat(e.target.value)}
-            className="border rounded px-2 py-1 text-sm w-full"
+            className="border rounded px-3 py-2 text-sm w-full transition focus:ring focus:ring-blue-200 focus:outline-none"
+            aria-label="Repeat Options"
           >
             {repeatOptions.map((option, index) => (
               <option key={index} value={option}>
@@ -137,18 +134,20 @@ const Form = () => {
           </select>
         </div>
 
-        <div className={cn("description mb-3")}>
+        <div className="description mb-4">
           <textarea
             placeholder="What to remind"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="border rounded w-full px-2 py-1 text-sm"
+            className="border rounded w-full px-3 py-2 text-sm transition focus:ring focus:ring-blue-200 focus:outline-none"
+            aria-label="Reminder Description"
           ></textarea>
         </div>
 
         <button
           onClick={handleSubmit}
-          className="bg-blue-500 text-white py-2 px-4 rounded w-full"
+          className="bg-blue-500 text-white py-2 px-4 rounded w-full transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+          aria-label="Add Reminder"
         >
           Add reminder
         </button>
@@ -161,7 +160,7 @@ const Form = () => {
         />
       )}
 
-      <div className="mini-calendar-container w-full mt-4 max-w-md overflow-x-auto">
+      <div className="mini-calendar-container w-full mt-6 max-w-md overflow-x-auto">
         <MiniCalendar events={events} onRemoveEvent={handleRemoveEvent} />
       </div>
     </div>
