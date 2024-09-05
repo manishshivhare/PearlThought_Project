@@ -4,22 +4,26 @@ import DateSelector from "./DateSelector";
 import useDateStore from "../Zustand/store.js"; // Import Zustand store
 
 const CustomRecurrenceModal = ({ onClose }) => {
-  const { endDate, setEndDate } = useDateStore(); // Use Zustand store for end date
+  const { endDate, setEndDate, startDate } = useDateStore(); // Use Zustand store for end date
   const [repeatEvery, setRepeatEvery] = useState(1);
   const [repeatType, setRepeatType] = useState("week");
   const [selectedDays, setSelectedDays] = useState([]);
   const [endCondition, setEndCondition] = useState("never");
   const [occurrences, setOccurrences] = useState(10);
   const [showDateSelector, setShowDateSelector] = useState(false);
-  
 
   const { setRepeat } = useDateStore();
   const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
-
+  const [repeatOptions, setRepeatOptions] = useState([]);
   const handleDateSelectorClose = (selectedDate) => {
     setEndDate(dayjs(selectedDate)); // Use dayjs for consistent date handling
     setShowDateSelector(false);
   };
+
+  useEffect(() => {
+    const selectedDate = dayjs(startDate, "D MMM YYYY");
+    setRepeatOptions([`Monthly on day ${selectedDate.format("D")}`]);
+  }, [startDate]);
 
   const toggleDaySelection = (day) => {
     setSelectedDays((prev) =>
@@ -44,7 +48,16 @@ const CustomRecurrenceModal = ({ onClose }) => {
 
     setRepeat(recurrenceRule); // Save the recurrence rule to Zustand
     if (onClose) onClose();
-  }, [repeatEvery, repeatType, selectedDays, endCondition, occurrences, endDate, setRepeat, onClose]);
+  }, [
+    repeatEvery,
+    repeatType,
+    selectedDays,
+    endCondition,
+    occurrences,
+    endDate,
+    setRepeat,
+    onClose,
+  ]);
 
   // Set the current weekday as default if repeat type is "week" and nothing is selected
   useEffect(() => {
@@ -81,7 +94,21 @@ const CustomRecurrenceModal = ({ onClose }) => {
             <option value="year">year</option>
           </select>
         </div>
-
+        {repeatType === "month" && (
+          <div className="flex items-center mb-4">
+            <select
+              value=""
+              onChange={(e) => {}}
+              className="border rounded px-2 py-1 text-sm w-full"
+            >
+              {repeatOptions.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         {repeatType === "week" && (
           <div className="flex items-center mb-4">
             <span className="mr-2">Repeat on</span>
@@ -113,7 +140,9 @@ const CustomRecurrenceModal = ({ onClose }) => {
               onChange={() => handleEndConditionChange("never")}
               aria-labelledby="never"
             />
-            <label htmlFor="never" className="ml-2">Never</label>
+            <label htmlFor="never" className="ml-2">
+              Never
+            </label>
           </div>
           <div className="flex items-center mb-2">
             <input
@@ -123,7 +152,9 @@ const CustomRecurrenceModal = ({ onClose }) => {
               onChange={() => handleEndConditionChange("on")}
               aria-labelledby="on"
             />
-            <label htmlFor="on" className="ml-2">On</label>
+            <label htmlFor="on" className="ml-2">
+              On
+            </label>
             {endCondition === "on" && (
               <input
                 type="text"
@@ -143,7 +174,9 @@ const CustomRecurrenceModal = ({ onClose }) => {
               onChange={() => handleEndConditionChange("after")}
               aria-labelledby="after"
             />
-            <label htmlFor="after" className="ml-2">After</label>
+            <label htmlFor="after" className="ml-2">
+              After
+            </label>
             {endCondition === "after" && (
               <input
                 type="number"
