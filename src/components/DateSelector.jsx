@@ -1,11 +1,10 @@
-import "./App.css";
 import dayjs from "dayjs";
 import React, { useState } from "react";
-import { generateDate, months } from "./utils/Calendar.js";
-import cn from "./utils/cn.js";
+import { generateDate, months } from "../utils/Calendar.js";
+import cn from "../utils/cn.js";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
-export default function Calendar() {
+export default function DateSelector(){
   const days = ["S", "M", "T", "W", "T", "F", "S"];
   const currentDate = dayjs();
   const [today, setToday] = useState(currentDate);
@@ -55,7 +54,7 @@ export default function Calendar() {
 
         <div className=" grid grid-cols-7 ">
           {generateDate(today.month(), today.year()).map(
-            ({ date, currentMonth, today }, index) => {
+            ({ date, today, currentMonth}, index) => {
               return (
                 <div
                   key={index}
@@ -64,6 +63,7 @@ export default function Calendar() {
                   <h1
                     className={cn(
                       today ? "bg-red-600 text-white" : "",
+                      currentMonth ? "": "hidden",
                       selectDate.toDate().toDateString() ===
                         date.toDate().toDateString()
                         ? "bg-black text-white"
@@ -82,12 +82,12 @@ export default function Calendar() {
           )}
         </div>
       </div>
-      <div className="h-96 w-96 sm:px-5">
+      {/* <div className="h-96 w-96 sm:px-5">
         <h1 className=" font-semibold">
           Schedule for {selectDate.toDate().toDateString()}
         </h1>
         <p className="text-gray-400">No meetings for today.</p>
-      </div>
+      </div> */}
     </div>
   );
-}
+};

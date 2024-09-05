@@ -9,11 +9,17 @@ export const generateDate = (
 
   const arrayOfDate = [];
 
+  for(let i = 0; i<firstDateOfMonth.day(); i++){
+    arrayOfDate.push({
+      date: firstDateOfMonth.day(i),
+      currentMonth: false
+    })
+  }
   // generate current date
   for (let i = firstDateOfMonth.date(); i <= lastDateOfMonth.date(); i++) {
     arrayOfDate.push({
-      currentMonth: true,
       date: firstDateOfMonth.date(i),
+      currentMonth:true,
       today:
         firstDateOfMonth.date(i).toDate().toDateString() ===
         dayjs().toDate().toDateString(),
