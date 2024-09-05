@@ -125,7 +125,7 @@ const Form = () => {
 
         <div className="description mb-3">
           <textarea
-            placeholder="Add description"
+            placeholder="What to remind"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="border rounded w-full px-2 py-1 text-sm"
