@@ -17,8 +17,11 @@ const Form = () => {
   } = useDateStore();
   const [date, setDate] = useState(dayjs().format("D MMM YYYY"));
   const [showDateSelector, setShowDateSelector] = useState(false);
-  const [isCustomRecurrenceModalOpen, setIsCustomRecurrenceModalOpen] = useState(false);
-  const [events, setEvents] = useState(JSON.parse(localStorage.getItem("events")) || []);
+  const [isCustomRecurrenceModalOpen, setIsCustomRecurrenceModalOpen] =
+    useState(false);
+  const [events, setEvents] = useState(
+    JSON.parse(localStorage.getItem("events")) || []
+  );
   const [repeatOptions, setRepeatOptions] = useState([]);
 
   const formatDate = (date) => dayjs(date).format("D MMM YYYY");
@@ -70,7 +73,9 @@ const Form = () => {
       setIsCustomRecurrenceModalOpen(true);
     } else if (!repeatOptions.includes(repeat)) {
       setRepeatOptions((prevOptions) => {
-        const newOptions = prevOptions.filter((option) => option !== "Custom...");
+        const newOptions = prevOptions.filter(
+          (option) => option !== "Custom..."
+        );
         return [...newOptions, repeat, "Custom..."];
       });
     }
@@ -94,7 +99,7 @@ const Form = () => {
 
         <div className="flex mb-4 gap-3 items-center">
           <div
-            className="date-time-picker flex items-center gap-3 border border-gray-300 rounded p-3 cursor-pointer hover:border-blue-500 transition-all"
+            className="date-time-picker hover:bg-gray-200 flex items-center gap-3 border border-gray-300 rounded p-2 cursor-pointer transition-all"
             onClick={() => setShowDateSelector(true)}
             role="button"
             aria-label="Select Date"
@@ -123,7 +128,7 @@ const Form = () => {
           <select
             value={repeat}
             onChange={(e) => setRepeat(e.target.value)}
-            className="border rounded px-3 py-2 text-sm w-full transition focus:ring focus:ring-blue-200 focus:outline-none"
+            className="border rounded px-3 py-2 text-sm w-full transition focus:outline-none cursor-pointer"
             aria-label="Repeat Options"
           >
             {repeatOptions.map((option, index) => (
@@ -138,15 +143,17 @@ const Form = () => {
           <textarea
             placeholder="What to remind"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="border rounded w-full px-3 py-2 text-sm transition focus:ring focus:ring-blue-200 focus:outline-none"
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+            className="border rounded w-full px-3 py-2 text-sm bg-gray-100 text-gray resize-none focus:outline-none  "
             aria-label="Reminder Description"
           ></textarea>
         </div>
 
         <button
           onClick={handleSubmit}
-          className="bg-blue-500 text-white py-2 px-4 rounded w-full transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+          className="bg-blue-500 text-white py-2 px-4 rounded w-full transition duration-300 ease-in-out transform hover:bg-blue-600 "
           aria-label="Add Reminder"
         >
           Add reminder
