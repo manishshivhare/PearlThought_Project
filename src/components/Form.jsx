@@ -17,11 +17,8 @@ const Form = () => {
 
   const [date, setDate] = useState(dayjs().format("D MMM YYYY"));
   const [showDateSelector, setShowDateSelector] = useState(false);
-  const [isCustomRecurrenceModalOpen, setIsCustomRecurrenceModalOpen] =
-    useState(false);
-  const [events, setEvents] = useState(
-    JSON.parse(localStorage.getItem("events")) || []
-  );
+  const [isCustomRecurrenceModalOpen, setIsCustomRecurrenceModalOpen] = useState(false);
+  const [events, setEvents] = useState(JSON.parse(localStorage.getItem("events")) || []);
   const [repeatOptions, setRepeatOptions] = useState([]);
 
   const formatDate = (date) => dayjs(date).format("D MMM YYYY");
@@ -76,7 +73,7 @@ const Form = () => {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
-      <div className="task-form bg-white shadow-lg rounded-md p-4 w-96">
+      <div className="task-form bg-white shadow-lg rounded-md p-4 w-full max-w-md">
         <div className="tabs flex justify-between border-b pb-2 mb-3">
           Reminder
         </div>
@@ -95,7 +92,10 @@ const Form = () => {
 
         {showDateSelector && (
           <>
-            <DateSelector onClose={handleDateSelectorClose} />
+            <DateSelector
+              onClose={handleDateSelectorClose}
+              className="modal-fullscreen"
+            />
             <div
               className="fixed inset-0 bg-black bg-opacity-50 z-40"
               onClick={() => setShowDateSelector(false)}
@@ -141,10 +141,13 @@ const Form = () => {
       </div>
 
       {isCustomRecurrenceModalOpen && (
-        <CustomRecurrenceModal onClose={handleCustomRecurrenceModalClose} />
+        <CustomRecurrenceModal
+          onClose={handleCustomRecurrenceModalClose}
+          className="modal-fullscreen"
+        />
       )}
 
-      <div className="mini-calendar-container w-full mt-4 max-w-md">
+      <div className="mini-calendar-container w-full mt-4 max-w-md overflow-x-auto">
         <MiniCalendar events={events} onRemoveEvent={handleRemoveEvent} />
       </div>
     </div>
