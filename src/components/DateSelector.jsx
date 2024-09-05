@@ -8,23 +8,21 @@ const DateSelector = ({ onClose }) => {
   const days = ["S", "M", "T", "W", "T", "F", "S"];
 
   const [displayedDate, setDisplayedDate] = useState(dayjs());
-  const [date, setDate] = useState("");
+
   const modalRef = useRef(null);
 
   const handleDateSelect = useCallback(
     (date) => {
-      setDate(date);
-      
       if (onClose) onClose(date);
     },
-    [setDate, onClose]
+    [onClose]
   );
 
   const handleTodayClick = useCallback(() => {
     const today = dayjs();
-    setDate(today);
+
     setDisplayedDate(today);
-  }, [setDate, onClose]);
+  }, [onClose]);
 
   const handleMonthChange = useCallback(
     (direction) => {
@@ -53,7 +51,6 @@ const DateSelector = ({ onClose }) => {
     };
   }, [handleClickOutside]);
 
- 
   const formattedCurrentDate = dayjs();
 
   return (
