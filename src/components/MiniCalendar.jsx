@@ -1,13 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import dayjs from "dayjs";
+import ConfirmationModal from "./ConfirmationModal";
 
 const MiniCalendar = ({ events, onRemoveEvent }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEventIndex, setSelectedEventIndex] = useState(null);
+  const [selectedEventDate, setSelectedEventDate] = useState("");
+
   const formatDate = (date) => dayjs(date).format("D MMM YYYY");
 
-  const handleRemoveEvent = (index) => {
-    if (window.confirm("Are you sure you want to remove this event?")) {
-      onRemoveEvent(index);
+  const openModal = (index, date) => {
+    setSelectedEventIndex(index);
+    setSelectedEventDate(date);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmRemove = () => {
+    if (selectedEventIndex !== null) {
+      onRemoveEvent(selectedEventIndex);
     }
+    setIsModalOpen(false);
+    setSelectedEventIndex(null);
+    setSelectedEventDate("");
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEventIndex(null);
+    setSelectedEventDate("");
   };
 
   return (
@@ -33,7 +53,7 @@ const MiniCalendar = ({ events, onRemoveEvent }) => {
               </div>
               <button
                 className="text-red-500 hover:text-red-700 focus:outline-none"
-                onClick={() => handleRemoveEvent(index)}
+                onClick={() => openModal(index, formatDate(startDate))}
                 aria-label={`Remove event from ${formatDate(startDate)}`}
               >
                 <svg
@@ -55,6 +75,12 @@ const MiniCalendar = ({ events, onRemoveEvent }) => {
           );
         })
       )}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmRemove}
+        eventDate={selectedEventDate}
+      />
     </div>
   );
 };
