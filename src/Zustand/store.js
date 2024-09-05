@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 
 const useDateStore = create((set) => ({
   startDate: dayjs().startOf('day'),
-  endDate: '',
   repeat: "Doesn't repeat",
   description: '',
   setStartDate: (date) => set({ startDate: date }),

@@ -1,11 +1,11 @@
-import React from 'react';
-import dayjs from 'dayjs';
+import React from "react";
+import dayjs from "dayjs";
 
 const MiniCalendar = ({ events, onRemoveEvent }) => {
-  const formatDate = (date) => dayjs(date).format('D MMM YYYY');
+  const formatDate = (date) => dayjs(date).format("D MMM YYYY");
 
   const handleRemoveEvent = (index) => {
-    if (window.confirm('Are you sure you want to remove this event?')) {
+    if (window.confirm("Are you sure you want to remove this event?")) {
       onRemoveEvent(index);
     }
   };
@@ -18,21 +18,21 @@ const MiniCalendar = ({ events, onRemoveEvent }) => {
       ) : (
         events.map((event, index) => {
           const startDate = dayjs(event.startDate);
-          const endDate = dayjs(event.endDate);
+
           return (
             <div
               key={index}
-              className="event bg-gray-50 border border-gray-200 rounded-md p-4 mb-3 flex justify-between items-start"
+              className="event bg-gray-50 border border-gray-200 rounded-md p-4 mb-3 flex items-center justify-between"
             >
               <div className="flex-1">
                 <h3 className="font-semibold text-sm">
-                  {formatDate(startDate)} - {formatDate(endDate)}
+                  {formatDate(startDate)}
                 </h3>
                 <p className="text-xs text-gray-600">Repeat: {event.repeat}</p>
                 <p className="text-xs text-gray-800">{event.description}</p>
               </div>
               <button
-                className="ml-4 text-red-500 hover:text-red-700 focus:outline-none"
+                className="text-red-500 hover:text-red-700 focus:outline-none"
                 onClick={() => handleRemoveEvent(index)}
                 aria-label={`Remove event from ${formatDate(startDate)}`}
               >
