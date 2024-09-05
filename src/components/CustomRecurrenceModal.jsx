@@ -41,8 +41,9 @@ const CustomRecurrenceModal = ({ onClose }) => {
 
   const constructRecurrenceString = useMemo(() => {
     let recurrenceString = `Every ${repeatEvery} ${repeatType}${
-      repeatEvery > 1 ? "s" : ""
+      repeatEvery > 1 ? "s" : "" 
     }`;
+     
 
     if (repeatType === "week" && selectedDays.length > 0) {
       const selectedDaysString = selectedDays
@@ -268,6 +269,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             selectedDate={endDate}
           />
         )}
+      <div className="mt-3 border text-sm bg-gray-200 p-1 rounded">{constructRecurrenceString}</div>
       </div>
     </div>
   );

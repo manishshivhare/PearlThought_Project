@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 const useDateStore = create((set) => ({
   startDate: dayjs().startOf('day'),
   repeat: "Doesn't repeat",
-  description: '',
+  description: 'Nothing',
   setStartDate: (date) => set({ startDate: date }),
   setEndDate: (date) => set({ endDate: date }),
   setRepeat: (value) => set({ repeat: value }),

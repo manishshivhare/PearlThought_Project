@@ -4,6 +4,7 @@ import DateSelector from "./DateSelector.jsx";
 import MiniCalendar from "./MiniCalendar.jsx";
 import CustomRecurrenceModal from "./CustomRecurrenceModal";
 import useDateStore from "../Zustand/store.js";
+import cn from "../utils/cn.js";
 
 const Form = () => {
   const {
@@ -14,7 +15,7 @@ const Form = () => {
     setRepeat,
     setDescription,
   } = useDateStore();
-
+  const [error, setError] = useState(null)
   const [date, setDate] = useState(dayjs().format("D MMM YYYY"));
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [isCustomRecurrenceModalOpen, setIsCustomRecurrenceModalOpen] = useState(false);
@@ -37,6 +38,9 @@ const Form = () => {
   };
 
   const handleSubmit = () => {
+    if(description === ""){
+      setError("Can't be empty")
+    }
     const newEvent = {
       startDate,
       repeat,
@@ -133,7 +137,7 @@ const Form = () => {
           </select>
         </div>
 
-        <div className="description mb-3">
+        <div className={cn("description mb-3")}>
           <textarea
             placeholder="What to remind"
             value={description}
