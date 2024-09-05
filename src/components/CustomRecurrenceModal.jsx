@@ -273,7 +273,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
           </button>
           <button
             onClick={handleSaveRecurrenceRule}
-            className=" text-blue px-2 py-1 rounded-lg hover:bg-blue-100 transition-all"
+            className=" text-blue-400 px-2 py-1 rounded-lg hover:bg-blue-100 transition-all"
           >
             Save
           </button>
