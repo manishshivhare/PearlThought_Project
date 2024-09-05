@@ -198,7 +198,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
         )}
 
         {/* End Condition Section */}
-        <div className="mb-6">
+        <div className="mb-3">
           <div className="mb-3 font-medium text-gray-700">End</div>
           <div className="flex items-center mb-2">
             <input
@@ -260,7 +260,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             )}
           </div>
         </div>
-        <div className="mt-3 border text-sm bg-gray-200 p-1 rounded mb-3">
+        <div className="mt-1 border text-sm bg-gray-200 p-1 rounded mb-3">
           {constructRecurrenceString}
         </div>
         {/* Actions */}
