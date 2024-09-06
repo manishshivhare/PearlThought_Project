@@ -254,7 +254,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
                 type="text"
                 value={endDate ? dayjs(endDate).format("D MMM YYYY") : ""}
                 readOnly
-                className="bg-white rounded ml-2 cursor-pointer focus:outline-none px-2 py-1 text-sm "
+                className="bg-white rounded ml-2 cursor-pointer focus:outline-none px-2 py-1 text-sm max-w-[95px]"
                 onClick={() => setShowDateSelector(true)}
                 aria-label="End date"
               />
