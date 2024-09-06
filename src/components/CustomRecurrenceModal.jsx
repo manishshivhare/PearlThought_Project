@@ -174,7 +174,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             <select
               value={repeatType}
               onChange={(e) => setRepeatType(e.target.value)}
-              className="border rounded-md ml-2 focus:outline-none "
+              className="border rounded-md ml-2 focus:outline-none bg-white"
               aria-label="Repeat type"
             >
               <option value="day">day</option>
@@ -189,7 +189,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
               <select
                 value=""
                 onChange={(e) => {}}
-                className="border rounded-md px-3 py-1 text-sm w-full focus:outline-none"
+                className="border rounded-md px-3 py-1 text-sm w-full focus:outline-none bg-white"
               >
                 {repeatOptions.map((option, index) => (
                   <option key={index} value={option}>
