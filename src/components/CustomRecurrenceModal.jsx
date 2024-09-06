@@ -42,7 +42,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
   };
 
   const handleEndConditionChange = (condition) => {
-    setError("")
+    setError("");
     setEndCondition(condition);
     if (condition === "on") setShowDateSelector(true);
   };
@@ -144,7 +144,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
       aria-modal="true"
       aria-labelledby="recurrence-modal-title"
     >
-      <div className="bg-white shadow-lg rounded-lg p-3 w-76 max-w-[300px] h-auto">
+      <div className="bg-white shadow-lg rounded-lg p-2 w-76 max-w-[276px] h-auto">
         <h2
           id="recurrence-modal-title"
           className="text-xl font-semibold mb-2 border-b-2 text-gray-800"
@@ -157,74 +157,75 @@ const CustomRecurrenceModal = ({ onClose }) => {
             {error}
           </div>
         )}
-
-        <div className="flex items-center mb-4">
-          <label className="mr-2 text-gray-700" htmlFor="repeatEvery">
-            Repeat every
-          </label>
-          <input
-            id="repeatEvery"
-            type="number"
-            min="1"
-            value={repeatEvery}
-            onChange={(e) => setRepeatEvery(e.target.value)}
-            className="border rounded-md w-16 text-center focus:outline-none"
-            aria-label="Repeat every"
-          />
-          <select
-            value={repeatType}
-            onChange={(e) => setRepeatType(e.target.value)}
-            className="border rounded-md ml-2 focus:outline-none"
-            aria-label="Repeat type"
-          >
-            <option value="day">day</option>
-            <option value="week">week</option>
-            <option value="month">month</option>
-            <option value="year">year</option>
-          </select>
-        </div>
-
-        {repeatType === "month" && (
-          <div className="flex items-center mb-4">
+        <div className="bg-gray-200 rounded p-2">
+          <div className="flex items-center mb-2 ">
+            <label className="mr-2 text-gray-700" htmlFor="repeatEvery">
+              Repeat every
+            </label>
+            <input
+              id="repeatEvery"
+              type="number"
+              min="1"
+              value={repeatEvery}
+              onChange={(e) => setRepeatEvery(e.target.value)}
+              className="border rounded-md w-16 text-center focus:outline-none"
+              aria-label="Repeat every"
+            />
             <select
-              value=""
-              onChange={(e) => {}}
-              className="border rounded-md px-3 py-1 text-sm w-full focus:outline-none"
+              value={repeatType}
+              onChange={(e) => setRepeatType(e.target.value)}
+              className="border rounded-md ml-2 focus:outline-none"
+              aria-label="Repeat type"
             >
-              {repeatOptions.map((option, index) => (
-                <option key={index} value={option}>
-                  {option}
-                </option>
-              ))}
+              <option value="day">day</option>
+              <option value="week">week</option>
+              <option value="month">month</option>
+              <option value="year">year</option>
             </select>
           </div>
-        )}
 
-        {repeatType === "week" && (
-          <div className="flex items-center mb-4">
-            <span className="mr-2 text-gray-700">Repeat on</span>
-            <div className="flex gap-1">
-              {daysOfWeek.map((day, index) => (
-                <button
-                  key={index}
-                  onClick={() => toggleDaySelection(index)}
-                  className={`border rounded-full w-6 h-6 flex items-center justify-center focus:outline-none ${
-                    selectedDays.includes(index)
-                      ? "bg-blue-500 text-white"
-                      : "text-gray-700 hover:bg-gray-100 "
-                  }`}
-                  aria-pressed={selectedDays.includes(index)}
-                  aria-label={`Repeat on ${day}`}
-                >
-                  {day}
-                </button>
-              ))}
+          {repeatType === "month" && (
+            <div className="flex items-center mb-1">
+              <select
+                value=""
+                onChange={(e) => {}}
+                className="border rounded-md px-3 py-1 text-sm w-full focus:outline-none"
+              >
+                {repeatOptions.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className="mb-3">
-          <div className="mb-3 font-medium text-gray-700">End</div>
+          {repeatType === "week" && (
+            <div className="flex items-center mb-1">
+              <span className="mr-2 text-gray-700">Repeat on</span>
+              <div className="flex gap-1">
+                {daysOfWeek.map((day, index) => (
+                  <button
+                    key={index}
+                    onClick={() => toggleDaySelection(index)}
+                    className={`rounded-full w-5 h-5 flex items-center justify-center focus:outline-none text-xs ${
+                      selectedDays.includes(index)
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700 hover:bg-gray-100 "
+                    }`}
+                    aria-pressed={selectedDays.includes(index)}
+                    aria-label={`Repeat on ${day}`}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="bg-gray-200 rounded p-2 mt-2">
+        <div className="mb-1">
+          <div className="mb-2 font-medium text-gray-700">End</div>
           <div className="flex items-center mb-2">
             <input
               type="radio"
@@ -282,7 +283,8 @@ const CustomRecurrenceModal = ({ onClose }) => {
             )}
           </div>
         </div>
-        <div className="mt-1 border text-sm bg-gray-200 p-1 rounded mb-1">
+        </div>
+        <div className="mt-2 border text-sm bg-gray-200 p-1 rounded mb-1 min-h-[50px]">
           {constructRecurrenceString}
         </div>
         <div className="flex justify-end space-x-2">
