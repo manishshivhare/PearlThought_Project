@@ -211,7 +211,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
                     className={`rounded-full w-5 h-5 flex items-center justify-center focus:outline-none text-xs  ${
                       selectedDays.includes(index)
                         ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-gray-100 bg-white"
+                        : "text-gray-700 hover:bg-gray-50 bg-white"
                     }`}
                     aria-pressed={selectedDays.includes(index)}
                     aria-label={`Repeat on ${day}`}
