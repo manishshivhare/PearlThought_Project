@@ -5,7 +5,7 @@ import useDateStore from "../Zustand/store.js"; // Import Zustand store
 import { day } from "../utils/Calendar.js";
 
 const CustomRecurrenceModal = ({ onClose }) => {
-  const { repeat, startDate, setRepeat } = useDateStore(); // Use Zustand store
+  const { startDate, setRepeat } = useDateStore(); // Use Zustand store
   const [repeatEvery, setRepeatEvery] = useState(1);
   const [repeatType, setRepeatType] = useState("week");
   const [selectedDays, setSelectedDays] = useState([]);
@@ -123,7 +123,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
       aria-modal="true"
       aria-labelledby="recurrence-modal-title"
     >
-      <div className="bg-white shadow-lg rounded-lg p-4 w-content max-w-full">
+      <div className="bg-white shadow-lg rounded-lg p-3 w-76 max-w-[300px] h-auto">
         <h2
           id="recurrence-modal-title"
           className="text-xl font-semibold mb-4 text-gray-800"
@@ -142,13 +142,13 @@ const CustomRecurrenceModal = ({ onClose }) => {
             min="1"
             value={repeatEvery}
             onChange={(e) => setRepeatEvery(e.target.value)}
-            className="border rounded-md w-16 text-center focus:ring focus:ring-blue-200"
+            className="border rounded-md w-16 text-center focus:outline-none"
             aria-label="Repeat every"
           />
           <select
             value={repeatType}
             onChange={(e) => setRepeatType(e.target.value)}
-            className="border rounded-md ml-2 focus:ring focus:ring-blue-200"
+            className="border rounded-md ml-2 focus:outline-none"
             aria-label="Repeat type"
           >
             <option value="day">day</option>
@@ -163,7 +163,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             <select
               value=""
               onChange={(e) => {}}
-              className="border rounded-md px-3 py-1 text-sm w-full focus:ring focus:ring-blue-200"
+              className="border rounded-md px-3 py-1 text-sm w-full focus:outline-none"
             >
               {repeatOptions.map((option, index) => (
                 <option key={index} value={option}>
@@ -182,10 +182,10 @@ const CustomRecurrenceModal = ({ onClose }) => {
                 <button
                   key={index}
                   onClick={() => toggleDaySelection(index)}
-                  className={`border rounded-full w-8 h-8 flex items-center justify-center focus:outline-none ${
+                  className={`border rounded-full w-6 h-6 flex items-center justify-center focus:outline-none ${
                     selectedDays.includes(index)
                       ? "bg-blue-500 text-white"
-                      : "text-gray-700"
+                      : "text-gray-700 hover:bg-gray-100 "
                   }`}
                   aria-pressed={selectedDays.includes(index)}
                   aria-label={`Repeat on ${day}`}
@@ -206,7 +206,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
               id="never"
               checked={endCondition === "never"}
               onChange={() => handleEndConditionChange("never")}
-              className="focus:ring focus:ring-blue-200"
+              
               aria-labelledby="never"
             />
             <label htmlFor="never" className="ml-2 text-gray-700">
@@ -219,7 +219,6 @@ const CustomRecurrenceModal = ({ onClose }) => {
               id="on"
               checked={endCondition === "on"}
               onChange={() => handleEndConditionChange("on")}
-              className="focus:ring focus:ring-blue-200"
               aria-labelledby="on"
             />
             <label htmlFor="on" className="ml-2 text-gray-700">
@@ -230,7 +229,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
                 type="text"
                 value={endDate ? dayjs(endDate).format("D MMM YYYY") : ""}
                 readOnly
-                className="border rounded-md ml-2 cursor-pointer focus:outline-none focus:ring focus:ring-blue-200"
+                className="border rounded-md ml-2 cursor-pointer focus:outline-none "
                 onClick={() => setShowDateSelector(true)}
                 aria-label="End date"
               />
@@ -242,7 +241,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
               id="after"
               checked={endCondition === "after"}
               onChange={() => handleEndConditionChange("after")}
-              className="focus:ring focus:ring-blue-200"
+              
               aria-labelledby="after"
             />
             <label htmlFor="after" className="ml-2 text-gray-700">
@@ -254,26 +253,26 @@ const CustomRecurrenceModal = ({ onClose }) => {
                 min="1"
                 value={occurrences}
                 onChange={(e) => setOccurrences(e.target.value)}
-                className="border rounded-md ml-2 w-16 focus:outline-none focus:ring focus:ring-blue-200"
+                className="border rounded-md ml-2 w-16 focus:outline-none text-center"
                 aria-label="Occurrences"
               />
             )}
           </div>
         </div>
-        <div className="mt-1 border text-sm bg-gray-200 p-1 rounded mb-3">
+        <div className="mt-1 border text-sm bg-gray-200 p-1 rounded mb-1">
           {constructRecurrenceString}
         </div>
         {/* Actions */}
         <div className="flex justify-end space-x-2">
           <button
             onClick={handleCancel}
-            className="hover:bg-gray-100 text-gray px-2 py-1 rounded-lg  transition-all"
+            className="hover:bg-gray-50 text-gray px-2 py-1 rounded-lg  transition-all"
           >
             Cancel
           </button>
           <button
             onClick={handleSaveRecurrenceRule}
-            className=" text-blue-400 px-2 py-1 rounded-lg hover:bg-blue-100 transition-all"
+            className=" text-blue-400 px-2 py-1 rounded-lg hover:bg-blue-50 transition-all"
           >
             Save
           </button>
