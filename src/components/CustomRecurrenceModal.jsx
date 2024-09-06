@@ -157,7 +157,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             {error}
           </div>
         )}
-        <div className="bg-gray-200 rounded p-2">
+        <div className="bg-gray-100 rounded p-2">
           <div className="flex items-center mb-2 ">
             <label className="mr-2 text-gray-700" htmlFor="repeatEvery">
               Repeat every
@@ -168,7 +168,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
               min="1"
               value={repeatEvery}
               onChange={(e) => setRepeatEvery(e.target.value)}
-              className="border rounded-md w-16 text-center focus:outline-none "
+              className="border rounded-md w-16 text-center focus:outline-none"
               aria-label="Repeat every"
             />
             <select
@@ -223,7 +223,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             </div>
           )}
         </div>
-        <div className="bg-gray-200 rounded p-2 mt-2">
+        <div className="bg-gray-100 rounded p-2 mt-2">
         <div className="mb-1">
           <div className="mb-2 font-medium text-gray-700">End</div>
           <div className="flex items-center mb-2">
@@ -284,7 +284,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
           </div>
         </div>
         </div>
-        <div className="mt-2 border text-sm bg-gray-200 p-1 rounded mb-1 min-h-[50px]">
+        <div className="mt-2 text-sm bg-gray-100 p-1 rounded mb-1 min-h-[50px]">
           {constructRecurrenceString}
         </div>
         <div className="flex justify-end space-x-2">
