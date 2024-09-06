@@ -157,7 +157,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             {error}
           </div>
         )}
-        <div className="bg-gray-200 rounded p-2">
+        <div className="bg-white rounded p-2">
           <div className="flex items-center mb-2 ">
             <label className="mr-2 text-gray-700" htmlFor="repeatEvery">
               Repeat every
