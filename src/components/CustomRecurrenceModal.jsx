@@ -177,10 +177,10 @@ const CustomRecurrenceModal = ({ onClose }) => {
               className="border rounded-md ml-2 focus:outline-none bg-white"
               aria-label="Repeat type"
             >
-              <option value="day">day</option>
-              <option value="week">week</option>
-              <option value="month">month</option>
-              <option value="year">year</option>
+              <option value="day">Day</option>
+              <option value="week">Week</option>
+              <option value="month">Month</option>
+              <option value="year">Year</option>
             </select>
           </div>
 
