@@ -168,13 +168,13 @@ const CustomRecurrenceModal = ({ onClose }) => {
               min="1"
               value={repeatEvery}
               onChange={(e) => setRepeatEvery(e.target.value)}
-              className="border rounded-md w-16 text-center focus:outline-none"
+              className="border rounded-md w-16 text-center focus:outline-none "
               aria-label="Repeat every"
             />
             <select
               value={repeatType}
               onChange={(e) => setRepeatType(e.target.value)}
-              className="border rounded-md ml-2 focus:outline-none"
+              className="border rounded-md ml-2 focus:outline-none "
               aria-label="Repeat type"
             >
               <option value="day">day</option>
@@ -208,10 +208,10 @@ const CustomRecurrenceModal = ({ onClose }) => {
                   <button
                     key={index}
                     onClick={() => toggleDaySelection(index)}
-                    className={`rounded-full w-5 h-5 flex items-center justify-center focus:outline-none text-xs ${
+                    className={`rounded-full w-5 h-5 flex items-center justify-center focus:outline-none text-xs  ${
                       selectedDays.includes(index)
                         ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-gray-100 "
+                        : "text-gray-700 hover:bg-gray-100 bg-white"
                     }`}
                     aria-pressed={selectedDays.includes(index)}
                     aria-label={`Repeat on ${day}`}
@@ -254,7 +254,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
                 type="text"
                 value={endDate ? dayjs(endDate).format("D MMM YYYY") : ""}
                 readOnly
-                className="bg-gray-100 rounded ml-2 cursor-pointer focus:outline-none px-2 py-1 text-sm"
+                className="bg-white rounded ml-2 cursor-pointer focus:outline-none px-2 py-1 text-sm "
                 onClick={() => setShowDateSelector(true)}
                 aria-label="End date"
               />
