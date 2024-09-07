@@ -42,8 +42,9 @@ export const months = [
   "November",
   "December",
 ];
+export const daysChar = ["S", "M", "T", "W", "T", "F", "S"];
 
-export const day = [
+export const daysFullString = [
   "Sunday",
   "Monday",
   "Tuesday",

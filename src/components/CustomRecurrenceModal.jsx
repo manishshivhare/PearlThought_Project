@@ -1,9 +1,8 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import dayjs from "dayjs";
 import DateSelector from "./DateSelector";
-import useDateStore from "../Zustand/store.js"; // Import Zustand store
-import { day } from "../utils/Calendar.js";
-import cn from "../utils/cn.js";
+import useDateStore from "../Zustand/store.js";
+import { daysFullString, daysChar } from "../utils/Calendar.js";
 
 const CustomRecurrenceModal = ({ onClose }) => {
   const { startDate, setRepeat } = useDateStore();
@@ -14,10 +13,9 @@ const CustomRecurrenceModal = ({ onClose }) => {
   const [occurrences, setOccurrences] = useState(10);
   const [endDate, setEndDate] = useState(null);
   const [showDateSelector, setShowDateSelector] = useState(false);
-  const [error, setError] = useState(null); // State for error message
-
-  const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
-
+  const [error, setError] = useState(null);
+  const buttonRef = useRef(null);
+  
   const repeatOptions = useMemo(() => {
     const selectedDate = dayjs(startDate, "D MMM YYYY");
     return [`Monthly on day ${selectedDate.format("D")}`];
@@ -35,12 +33,14 @@ const CustomRecurrenceModal = ({ onClose }) => {
     }
   };
 
+  //handling day selection when week is selected
   const toggleDaySelection = (day) => {
     setSelectedDays((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
   };
 
+  //ensure error will disappear on end condition change
   const handleEndConditionChange = (condition) => {
     setError("");
     setEndCondition(condition);
@@ -55,11 +55,11 @@ const CustomRecurrenceModal = ({ onClose }) => {
     if (repeatType === "week" && selectedDays.length > 0) {
       const sortedSelectedDays = [...selectedDays].sort((a, b) => a - b);
       const selectedDaysString = sortedSelectedDays
-        .map((index) => day[index].substring(0, 3))
+        .map((index) => daysFullString[index].substring(0, 3))
         .join(", ");
       recurrenceString += ` on ${selectedDaysString}`;
     }
-
+    //switch is used for recuurence string construction based on user inputs
     switch (endCondition) {
       case "never":
         recurrenceString += ", never ends";
@@ -86,6 +86,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
     endDate,
   ]);
 
+  //using callback function for rerturning recurrence string
   const handleSaveRecurrenceRule = useCallback(() => {
     if (endCondition === "on" && !endDate) {
       setError("Please select an end date.");
@@ -99,37 +100,34 @@ const CustomRecurrenceModal = ({ onClose }) => {
       setError("End date must be the same as or after the start date.");
       return;
     }
-
-    const recurrenceRule = {
-      repeatEvery: parseInt(repeatEvery, 10),
-      repeatType,
-      selectedDays,
-      endCondition,
-      occurrences:
-        endCondition === "after" ? parseInt(occurrences, 10) : undefined,
-      endDate: endCondition === "on" ? endDate : undefined,
-    };
+    //will be used for implementation
+    // const recurrenceRule = {
+    //   repeatEvery: parseInt(repeatEvery, 10),
+    //   repeatType,
+    //   selectedDays,
+    //   endCondition,
+    //   occurrences:
+    //     endCondition === "after" ? parseInt(occurrences, 10) : undefined,
+    //   endDate: endCondition === "on" ? endDate : undefined,
+    // };
 
     setRepeat(constructRecurrenceString);
-
     if (onClose) onClose(constructRecurrenceString);
   }, [
-    repeatEvery,
-    repeatType,
-    selectedDays,
     endCondition,
-    occurrences,
     endDate,
     setRepeat,
+    startDate,
     onClose,
     constructRecurrenceString,
   ]);
 
+  //handle close of modal wihtout any changes
   const handleCancel = () => {
     setRepeat("Doesn't repeat");
     if (onClose) onClose();
   };
-
+  //tracking changes in repeatType changes
   useEffect(() => {
     if (repeatType === "week" && selectedDays.length === 0) {
       const currentDayIndex = dayjs().day();
@@ -204,7 +202,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
             <div className="flex items-center mb-1">
               <span className="mr-2 text-gray-700">Repeat on</span>
               <div className="flex gap-1">
-                {daysOfWeek.map((day, index) => (
+                {daysChar.map((day, index) => (
                   <button
                     key={index}
                     onClick={() => toggleDaySelection(index)}
@@ -224,65 +222,66 @@ const CustomRecurrenceModal = ({ onClose }) => {
           )}
         </div>
         <div className="bg-gray-100 rounded p-2 mt-2">
-        <div className="mb-1">
-          <div className="mb-2 font-medium text-gray-700">End</div>
-          <div className="flex items-center mb-2">
-            <input
-              type="radio"
-              id="never"
-              checked={endCondition === "never"}
-              onChange={() => handleEndConditionChange("never")}
-              aria-labelledby="never"
-            />
-            <label htmlFor="never" className="ml-2 text-gray-700">
-              Never
-            </label>
-          </div>
-          <div className="flex items-center mb-2">
-            <input
-              type="radio"
-              id="on"
-              checked={endCondition === "on"}
-              onChange={() => handleEndConditionChange("on")}
-              aria-labelledby="on"
-            />
-            <label htmlFor="on" className="ml-2 text-gray-700">
-              On
-            </label>
-            {endCondition === "on" && (
+          <div className="mb-1">
+            <div className="mb-2 font-medium text-gray-700">End</div>
+            <div className="flex items-center mb-2">
               <input
-                type="text"
-                value={endDate ? dayjs(endDate).format("D MMM YYYY") : ""}
-                readOnly
-                className="bg-white rounded ml-2 cursor-pointer focus:outline-none px-2 py-1 text-sm max-w-[95px]"
-                onClick={() => setShowDateSelector(true)}
-                aria-label="End date"
+                type="radio"
+                id="never"
+                checked={endCondition === "never"}
+                onChange={() => handleEndConditionChange("never")}
+                aria-labelledby="never"
               />
-            )}
-          </div>
-          <div className="flex items-center">
-            <input
-              type="radio"
-              id="after"
-              checked={endCondition === "after"}
-              onChange={() => handleEndConditionChange("after")}
-              aria-labelledby="after"
-            />
-            <label htmlFor="after" className="ml-2 text-gray-700">
-              After
-            </label>
-            {endCondition === "after" && (
+              <label htmlFor="never" className="ml-2 text-gray-700">
+                Never
+              </label>
+            </div>
+            <div className="flex items-center mb-2">
               <input
-                type="number"
-                min="1"
-                value={occurrences}
-                onChange={(e) => setOccurrences(e.target.value)}
-                className="border rounded-md ml-2 w-16 focus:outline-none text-center"
-                aria-label="Occurrences"
+                type="radio"
+                id="on"
+                ref={buttonRef}
+                checked={endCondition === "on"}
+                onChange={() => handleEndConditionChange("on")}
+                aria-labelledby="on"
               />
-            )}
+              <label htmlFor="on" className="ml-2 text-gray-700">
+                On
+              </label>
+              {endCondition === "on" && (
+                <input
+                  type="text"
+                  value={endDate ? dayjs(endDate).format("D MMM YYYY") : ""}
+                  readOnly
+                  className="bg-white rounded ml-2 cursor-pointer focus:outline-none px-2 py-1 text-sm max-w-[95px]"
+                  onClick={() => setShowDateSelector(true)}
+                  aria-label="End date"
+                />
+              )}
+            </div>
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="after"
+                checked={endCondition === "after"}
+                onChange={() => handleEndConditionChange("after")}
+                aria-labelledby="after"
+              />
+              <label htmlFor="after" className="ml-2 text-gray-700">
+                After
+              </label>
+              {endCondition === "after" && (
+                <input
+                  type="number"
+                  min="1"
+                  value={occurrences}
+                  onChange={(e) => setOccurrences(e.target.value)}
+                  className="border rounded-md ml-2 w-16 focus:outline-none text-center"
+                  aria-label="Occurrences"
+                />
+              )}
+            </div>
           </div>
-        </div>
         </div>
         <div className="mt-2 text-sm bg-gray-100 p-1 rounded mb-1 min-h-[50px]">
           {constructRecurrenceString}
@@ -306,6 +305,7 @@ const CustomRecurrenceModal = ({ onClose }) => {
 
       {showDateSelector && (
         <DateSelector
+          anchorRef={buttonRef}
           onClose={handleDateSelectorClose}
           title="Select End Date"
         />
