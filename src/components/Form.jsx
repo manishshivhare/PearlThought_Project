@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dayjs from "dayjs";
 import DateSelector from "./DateSelector.jsx";
 import MiniCalendar from "./MiniCalendar.jsx";
 import CustomRecurrenceModal from "./CustomRecurrenceModal";
 import useDateStore from "../Zustand/store.js";
-import cn from "../utils/cn.js";
 
 const Form = () => {
   const {
@@ -25,6 +24,7 @@ const Form = () => {
   const [repeatOptions, setRepeatOptions] = useState([]);
 
   const formatDate = (date) => dayjs(date).format("D MMM YYYY");
+  const buttonRef = useRef(null);
 
   const handleDateSelectorClose = (selectedDate) => {
     const formattedDate = formatDate(selectedDate);
@@ -79,7 +79,7 @@ const Form = () => {
         return [...newOptions, repeat, "Custom..."];
       });
     }
-  }, [repeat]);
+  }, [repeat,repeatOptions]);
 
   const handleCustomRecurrenceModalClose = (customRepeat) => {
     if (customRepeat) {
@@ -101,6 +101,7 @@ const Form = () => {
           <div
             className="date-time-picker hover:bg-gray-200 flex items-center gap-3 border border-gray-300 rounded p-2 cursor-pointer transition-all"
             onClick={() => setShowDateSelector(true)}
+            ref={buttonRef}
             role="button"
             aria-label="Select Date"
           >
@@ -114,11 +115,12 @@ const Form = () => {
         {showDateSelector && (
           <>
             <DateSelector
+              anchorRef={buttonRef}
               onClose={handleDateSelectorClose}
               className="modal-fullscreen"
             />
             <div
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+              className="fixed bg-black bg-opacity-50 z-40"
               onClick={() => setShowDateSelector(false)}
             />
           </>
