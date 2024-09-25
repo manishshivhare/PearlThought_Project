@@ -15,6 +15,7 @@ const Form = () => {
     setDescription,
   } = useDateStore();
   const [date, setDate] = useState(dayjs().format("D MMM YYYY"));
+  const [time, setTime] = useState(dayjs().format("HH:mm"));
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [isCustomRecurrenceModalOpen, setIsCustomRecurrenceModalOpen] =
     useState(false);
@@ -33,6 +34,12 @@ const Form = () => {
     setShowDateSelector(false);
   };
 
+  const handleTimeChange = (e) => {
+    setTime(e.target.value);
+    const [hours, minutes] = e.target.value.split(':');
+    setStartDate(dayjs(startDate).hour(hours).minute(minutes));
+  };
+
   const handleRemoveEvent = (index) => {
     const updatedEvents = events.filter((_, i) => i !== index);
     setEvents(updatedEvents);
@@ -41,7 +48,7 @@ const Form = () => {
 
   const handleSubmit = () => {
     const newEvent = {
-      startDate,
+      startDate: dayjs(startDate).format('YYYY-MM-DD HH:mm'),
       repeat,
       description: description || "Nothing serious",
     };
@@ -51,6 +58,7 @@ const Form = () => {
     setStartDate(dayjs().startOf("day"));
     setDescription("");
     setRepeat("Doesn't repeat");
+    setTime(dayjs().format("HH:mm"));
   };
 
   useEffect(() => {
@@ -79,7 +87,7 @@ const Form = () => {
         return [...newOptions, repeat, "Custom..."];
       });
     }
-  }, [repeat,repeatOptions]);
+  }, [repeat, repeatOptions]);
 
   const handleCustomRecurrenceModalClose = (customRepeat) => {
     if (customRepeat) {
@@ -99,7 +107,7 @@ const Form = () => {
 
         <div className="flex mb-4 gap-3 items-center">
           <div
-            className="date-time-picker hover:bg-gray-200 flex items-center gap-3 border border-gray-300 rounded p-2 cursor-pointer transition-all"
+            className="date-picker hover:bg-gray-200 flex items-center gap-3 border border-gray-300 rounded p-2 cursor-pointer transition-all"
             onClick={() => setShowDateSelector(true)}
             ref={buttonRef}
             role="button"
@@ -110,6 +118,13 @@ const Form = () => {
             </label>
             <span className="text-gray-600">{date}</span>
           </div>
+          <input
+            type="time"
+            value={time}
+            onChange={handleTimeChange}
+            className="border border-gray-300 rounded p-2 focus:outline-none select-none focus:ring-0 hover:bg-gray-200"
+            aria-label="Select Time"
+          />
         </div>
 
         {showDateSelector && (
@@ -130,7 +145,7 @@ const Form = () => {
           <select
             value={repeat}
             onChange={(e) => setRepeat(e.target.value)}
-            className="border rounded px-3 py-2 text-sm w-full transition focus:outline-none cursor-pointer"
+            className="border rounded px-3 py-2 text-sm w-full transition focus:outline-none cursor-pointer "
             aria-label="Repeat Options"
           >
             {repeatOptions.map((option, index) => (
@@ -148,14 +163,14 @@ const Form = () => {
             onChange={(e) => {
               setDescription(e.target.value);
             }}
-            className="border rounded w-full px-3 py-2 text-sm bg-gray-100 text-gray resize-none focus:outline-none  "
+            className="border rounded w-full px-3 py-2 text-sm bg-gray-100 text-gray resize-none focus:outline-none"
             aria-label="Reminder Description"
           ></textarea>
         </div>
 
         <button
           onClick={handleSubmit}
-          className="bg-blue-500 text-white py-2 px-4 rounded w-full transition duration-300 ease-in-out transform hover:bg-blue-600 "
+          className="bg-blue-500 text-white py-2 px-4 rounded w-full transition duration-300 ease-in-out transform hover:bg-blue-600"
           aria-label="Add Reminder"
         >
           Add reminder
