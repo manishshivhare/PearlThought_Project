@@ -14,9 +14,12 @@ const Form = () => {
     setStartDate,
     setRepeat,
     setDescription,
+    time,
+    setTime,
   } = useDateStore();
+
   const [date, setDate] = useState(dayjs().format("D MMM YYYY"));
-  const [time, setTime] = useState(dayjs().format("HH:mm"));
+
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [isCustomRecurrenceModalOpen, setIsCustomRecurrenceModalOpen] =
     useState(false);
@@ -37,8 +40,7 @@ const Form = () => {
 
   const handleTimeChange = (e) => {
     setTime(e.target.value);
-    const [hours, minutes] = e.target.value.split(':');
-    setStartDate(dayjs(startDate).hour(hours).minute(minutes));
+    console.log(e.target.value);
   };
 
   const handleRemoveEvent = (index) => {
@@ -49,7 +51,7 @@ const Form = () => {
 
   const handleSubmit = () => {
     const newEvent = {
-      startDate: dayjs(startDate).format('YYYY-MM-DD HH:mm'),
+      startDate: dayjs(startDate).format("YYYY-MM-DD HH:mm"),
       time,
       repeat,
       description: description || "Nothing serious",
@@ -117,7 +119,7 @@ const Form = () => {
             aria-label="Select Date"
           >
             <label className="block text-md font-medium text-gray-700">
-            <SlCalender />
+              <SlCalender />
             </label>
             <span className="text-gray-600">{date}</span>
           </div>

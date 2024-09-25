@@ -8,7 +8,6 @@ const MiniCalendar = ({ events, onRemoveEvent }) => {
   const [selectedEventDate, setSelectedEventDate] = useState("");
 
   const formatDate = (date) => dayjs(date).format("D MMM YYYY");
-  const formatTime = (date) => dayjs(date).format("HH:mm");
 
   const openModal = (index, date) => {
     setSelectedEventIndex(index);
@@ -47,7 +46,7 @@ const MiniCalendar = ({ events, onRemoveEvent }) => {
             >
               <div className="flex-1">
                 <h3 className="font-semibold text-sm">
-                  {formatDate(startDate)} at {formatTime(startDate)}
+                  {formatDate(startDate)} at {event.time}
                 </h3>
                 <p className="text-xs text-gray-600">Repeat: {event.repeat}</p>
                 <p className="text-xs text-gray-800">Do: {event.description}</p>
