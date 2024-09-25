@@ -4,6 +4,7 @@ import DateSelector from "./DateSelector.jsx";
 import MiniCalendar from "./MiniCalendar.jsx";
 import CustomRecurrenceModal from "./CustomRecurrenceModal";
 import useDateStore from "../Zustand/store.js";
+import { SlCalender } from "react-icons/sl";
 
 const Form = () => {
   const {
@@ -49,6 +50,7 @@ const Form = () => {
   const handleSubmit = () => {
     const newEvent = {
       startDate: dayjs(startDate).format('YYYY-MM-DD HH:mm'),
+      time,
       repeat,
       description: description || "Nothing serious",
     };
@@ -64,6 +66,7 @@ const Form = () => {
   useEffect(() => {
     const selectedDate = dayjs(date, "D MMM YYYY");
     setRepeatOptions([
+      "Doesn't repeat",
       "Daily",
       `Weekly on ${selectedDate.format("dddd")}`,
       `Monthly on ${selectedDate.format("D")}`,
@@ -114,7 +117,7 @@ const Form = () => {
             aria-label="Select Date"
           >
             <label className="block text-md font-medium text-gray-700">
-              For:
+            <SlCalender />
             </label>
             <span className="text-gray-600">{date}</span>
           </div>
@@ -135,7 +138,7 @@ const Form = () => {
               className="modal-fullscreen"
             />
             <div
-              className="fixed bg-black bg-opacity-50 z-40"
+              className="fixed inset-0 bg-black bg-opacity-50 z-40"
               onClick={() => setShowDateSelector(false)}
             />
           </>
@@ -145,7 +148,7 @@ const Form = () => {
           <select
             value={repeat}
             onChange={(e) => setRepeat(e.target.value)}
-            className="border rounded px-3 py-2 text-sm w-full transition focus:outline-none cursor-pointer "
+            className="border rounded px-3 py-2 text-sm w-full transition focus:outline-none cursor-pointer"
             aria-label="Repeat Options"
           >
             {repeatOptions.map((option, index) => (
